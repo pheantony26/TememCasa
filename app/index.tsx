@@ -7,7 +7,7 @@ export default function Index() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace("/splash");
+      router.replace("/home");
     }, 100); // 100ms garante que o Root Layout já montou
     return () => clearTimeout(timer);
   }, []);

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   entrarText: {
-    color: "#4CAF50",
+    color: "#1a1a1a",
   },
   cadastrarText: {
     color: "#fff",

@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flex: 2,
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#1a1a1a",
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     padding: 20,

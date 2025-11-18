@@ -20,7 +20,7 @@ export default function Input({
   keyboardType = "default",
   autoCapitalize = "none",
   secureTextEntry = false,
-  backgroundColor = "#4CAF50",
+  backgroundColor = "#1a1a1a",
   color = "#fff",
   placeholderColor,
   borderColor = "#fff",      // branco padrão
