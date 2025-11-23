@@ -1,6 +1,7 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Button from "../src/components/Button";
 import Input from "../src/components/Input";
 
@@ -14,25 +15,26 @@ export default function Login() {
   };
 
   const handleForgotPassword = () => {
-    router.push("/recuperar-senha"); // futura tela de recuperação
+    router.push("/recuperar-senha");
+  };
+
+  const handleGoBack = () => {
+    router.replace("/splash"); // volta para splash sem permitir swipe-back
   };
 
   return (
     <View style={styles.container}>
-      {/* Parte da logo */}
-      <View style={styles.topContainer}>
-        <Image
-          source={require("../assets/images/logo.png")}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-      </View>
 
-      {/* Container verde com o formulário */}
+      {/* Ícone de voltar */}
+      <TouchableOpacity style={styles.backIcon} onPress={handleGoBack}>
+        <Ionicons name="arrow-back" size={28} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Container do formulário */}
       <View style={styles.bottomContainer}>
-        <Text style={styles.title}>Login</Text>
-        
-        {/* Input de e-mail */}
+        <Text style={styles.title}>Hey,{'\n'}bem vindo{'\n'}de volta!</Text>
+
+        {/* Inputs */}
         <Input
           value={email}
           onChangeText={setEmail}
@@ -40,13 +42,11 @@ export default function Login() {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-
-        {/* Input de senha */}
         <Input
           value={password}
           onChangeText={setPassword}
           placeholder="Senha"
-          secureTextEntry={true}
+          secureTextEntry={true} // ativa o olho para mostrar/esconder a senha
         />
 
         {/* Esqueceu a senha */}
@@ -60,62 +60,54 @@ export default function Login() {
           type="entrar"
           onPress={handleLogin}
         />
-
-        <Text style={styles.primeiroAcesso}>Primeiro acesso?</Text>
-
+        <Text style={styles.primeiroAcesso}>ou continue com</Text>
         <Button
-          title="Cadastre-se"
-          type="cadastrar"
+          title="Google"
+          type="google"
           onPress={() => router.push("/cadastro")}
         />
       </View>
     </View>
   );
-  
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#1a1a1a",
   },
-  topContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  backIcon: {
+    position: "absolute",
+    top: Platform.OS === "android" ? StatusBar.currentHeight! + 10 : 70,
+    left: 20,
+    zIndex: 10,
   },
   bottomContainer: {
-    flex: 2,
-    backgroundColor: "#1a1a1a",
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
+    flex: 1,
     padding: 20,
     justifyContent: "flex-start",
-  },
-  logo: {
-    width: 250,
-    height: 150,
-    marginTop: 20,
+    marginTop: 30,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 40,
-    textAlign: "center",
+    fontSize: 45,
+    marginBottom: 60,
+    textAlign: "left",
     color: "#fff",
-    marginTop: 15,
+    marginTop: 100,
+    fontWeight: "bold",
   },
   forgotPassword: {
     fontSize: 16,
     textAlign: "right",
     paddingRight: 10,
     color: "#fff",
-    marginBottom: 20,
-    textDecorationLine: "underline", // deixa parecendo um link
+    marginBottom: 40,
+    textDecorationLine: "underline",
   },
   primeiroAcesso: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: "center",
-    marginTop: 70,
+    marginTop: 5,
     color: "#fff",
     marginBottom: 20,
   },

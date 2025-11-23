@@ -1,19 +1,32 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image"; // << AGORA usando expo-image
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import logoHome from "../assets/images/logoHome.png";
 import BottomNav from "../src/components/BottomNav";
 
 export default function Home() {
+  const router = useRouter();
+
+  const handlePerfil = () => {
+    router.push("/perfil"); // vai para a perfil e limpa histórico
+  };
+
   return (
     <View style={styles.container}>
 
-      {/* Imagem no topo (carrega suave e sem delay) */}
+      {/* Botão de sair */}
+      <TouchableOpacity style={styles.perfilIcon} onPress={handlePerfil}>
+        <Ionicons name="person-circle-outline" size={32} color="#fff" />
+      </TouchableOpacity>
+
+      {/* Imagem no topo */}
       <Image 
         source={logoHome}
         style={styles.logo}
         contentFit="contain"
-        transition={300}          // fade-in suave
-        cachePolicy="memory-disk" // evita piscar em navegacao
+        transition={300}          
+        cachePolicy="memory-disk" 
       />
 
       <View style={styles.informacoesContainer}>
@@ -66,12 +79,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1a1a",
   },
 
-  // Ajustado para não ter delay
+  perfilIcon: {
+    position: "absolute",
+    top: 65,
+    right: 30,
+    zIndex: 10,
+  },
+
   logo: {
-    width: 300,    // menor -> carrega instantâneo
-    height: 300,
+    width: 200,
+    height: 200,
     alignSelf: "center",
-    marginTop: -10,
+    marginTop: 65,
+    marginBottom: 30
   },
 
   informacoesContainer: {
@@ -147,7 +167,7 @@ const styles = StyleSheet.create({
 
   cadastrarButtonText: {
     color: "#000",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
   },
 });

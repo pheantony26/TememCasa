@@ -1,99 +1,155 @@
-// app/splash.tsx
-
-// Importa o hook useRouter do expo-router para navegação entre telas
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-// Importa hooks do React para efeitos colaterais e referências
-import { useEffect, useRef } from "react";
-
-// Importa componentes e API de animação do React Native
-import { Animated, StyleSheet, View } from "react-native";
-
-// Define o componente Splash
 export default function Splash() {
-  // Inicializa o router para controlar a navegação
   const router = useRouter();
+  const [activeButton, setActiveButton] = useState("login");
 
-  // Cria referências de animação usando useRef
-  // fadeAnim: controla a opacidade da logo (0 = invisível, 1 = visível)
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const handlePress = (type: "login" | "cadastro") => {
+    setActiveButton(type);
+    setTimeout(() => {
+      if (type === "login") router.push("/login");
+      else router.push("/cadastro");
+    }, 200);
+  };
 
-  // scaleAnim: controla a escala da logo (0.8 = menor que o tamanho original)
-  const scaleAnim = useRef(new Animated.Value(0.8)).current;
-
-  // moveAnim: controla a posição vertical da logo (translateY)
-  const moveAnim = useRef(new Animated.Value(20)).current;
-
-  // useEffect: executa efeitos colaterais após o componente ser montado
-  useEffect(() => {
-    // Executa várias animações em paralelo
-    Animated.parallel([
-      // Anima a opacidade de 0 para 1 em 1.2 segundos
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1200,
-        useNativeDriver: true, // melhor desempenho
-      }),
-
-      // Anima a escala da logo de 0.8 para 1 com efeito de mola
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 4, // controla a "rigidez" da mola
-        useNativeDriver: true,
-      }),
-
-      // Anima a posição vertical da logo de 20 para 0 em 1.2 segundos
-      Animated.timing(moveAnim, {
-        toValue: 0,
-        duration: 1200,
-        useNativeDriver: true,
-      }),
-    ]).start(); // inicia a animação
-
-    // Configura um timer para navegar para a tela de login após 2.5 segundos
-    const timer = setTimeout(() => {
-      router.replace("/login"); // substitui a tela atual pela login
-    }, 2500);
-
-    // Limpa o timer se o componente for desmontado antes do tempo acabar
-    return () => clearTimeout(timer);
-  }, []); // [] significa que o efeito roda apenas uma vez após o mount
-
-  // Renderiza a tela
   return (
     <View style={styles.container}>
-      {/* Animated.Image permite animar propriedades da imagem */}
-      <Animated.Image
-        source={require("../assets/images/logo.png")} // caminho da logo
-        style={[
-          styles.logo, // estilo base da imagem
-          {
-            opacity: fadeAnim, // anima a opacidade
-            transform: [
-              { scale: scaleAnim }, // anima a escala
-              { translateY: moveAnim }, // anima a posição vertical
-            ],
-          },
-        ]}
-        resizeMode="contain" // mantém proporção da imagem
+
+      {/* Imagem superior */}
+      <Image
+        source={require("../assets/images/topsplash.png")}
+        style={styles.topImage}
+        resizeMode="contain"
       />
+
+      {/* Textos centrais */}
+      <View style={styles.centerContent}>
+        <Text style={styles.mainText}>
+          O melhor app para sua cozinha.
+        </Text>
+
+        <Text style={styles.subText}>
+          Organize seus produtos, acompanhe a{"\n"}
+          validade e descubra receitas incríveis.
+        </Text>
+      </View>
+
+      {/* Botões */}
+      <View style={styles.bottomContent}>
+        <View style={styles.buttonWrapper}>
+
+          {/* Login */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              styles.loginButton,
+              { marginRight: -20, zIndex: 2 },
+              pressed && { backgroundColor: "#E0E0E0" },
+            ]}
+            onPress={() => handlePress("login")}
+          >
+            <Text style={styles.loginText}>Login</Text>
+          </Pressable>
+
+          {/* Cadastro */}
+          <Pressable
+            style={({ pressed }) => [
+              styles.button,
+              styles.signupButton,
+              { zIndex: 1 },
+              pressed && { backgroundColor: "#666666" },
+            ]}
+            onPress={() => handlePress("cadastro")}
+          >
+            <Text style={styles.signupText}>Cadastro</Text>
+          </Pressable>
+
+        </View>
+      </View>
+
     </View>
   );
 }
 
-// Define os estilos do componente
 const styles = StyleSheet.create({
-  // Estilo do container principal
   container: {
-    flex: 1, // ocupa toda a tela
-    backgroundColor: "#fff", // fundo branco
-    justifyContent: "center", // centraliza verticalmente
-    alignItems: "center", // centraliza horizontalmente
+    flex: 1,
+    backgroundColor: "#1a1a1a",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 60,
+    paddingHorizontal: 20,
   },
 
-  // Estilo da logo
-  logo: {
-    width: 250, // largura da logo
-    height: 250, // altura da logo
+  topImage: {
+    width: 380,
+    height: 380,
+    marginTop: 0,
+    marginBottom: -80,
+  },
+
+  centerContent: {
+    alignItems: "center",
+    width: "100%",
+  },
+
+  mainText: {
+    fontSize: 35,
+    color: "#fff",
+    fontWeight: "bold",
+    lineHeight: 45,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+
+  subText: {
+    fontSize: 16,
+    color: "#CCCCCC",
+    marginTop: 5,
+    lineHeight: 22,
+    textAlign: "center",
+  },
+
+  bottomContent: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+
+  buttonWrapper: {
+    flexDirection: "row",
+    width: "90%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  button: {
+    flex: 1,
+    height: 60,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  loginButton: {
+    backgroundColor: "#FFFFFF",
+  },
+
+  signupButton: {
+    backgroundColor: "#888888",
+  },
+
+  loginText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#1a1a1a",
+  },
+
+  signupText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#ffffff",
   },
 });

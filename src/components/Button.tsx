@@ -1,8 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface ButtonProps {
   title: string;
-  type?: "entrar" | "cadastrar"; // tipo do botão
+  type?: "entrar" | "google"; // tipo do botão
   onPress: () => void;
 }
 
@@ -13,13 +14,24 @@ export default function Button({ title, type = "entrar", onPress }: ButtonProps)
     <TouchableOpacity
       style={[
         styles.button,
-        isEntrar ? styles.entrarButton : styles.cadastrarButton
+        isEntrar ? styles.entrarButton : styles.googleButton
       ]}
       onPress={onPress}
     >
-      <Text style={[styles.buttonText, isEntrar ? styles.entrarText : styles.cadastrarText]}>
-        {title}
-      </Text>
+      <View style={styles.content}>
+        {type === "google" && (
+          <AntDesign name="google" size={20} color="#fff" style={{ marginRight: 10 }} />
+        )}
+
+        <Text
+          style={[
+            styles.buttonText,
+            isEntrar ? styles.entrarText : styles.googleText
+          ]}
+        >
+          {title}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -33,10 +45,16 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   entrarButton: {
-    backgroundColor: "#fff",
+    backgroundColor: "#FF9F0A",
   },
-  cadastrarButton: {
-    backgroundColor: "#FF9800",
+  googleButton: {
+    backgroundColor: "#1a1a1a",
+    borderWidth: 0.5,
+    borderColor: "#a1a1a1",
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   buttonText: {
     fontSize: 18,
@@ -45,7 +63,7 @@ const styles = StyleSheet.create({
   entrarText: {
     color: "#1a1a1a",
   },
-  cadastrarText: {
+  googleText: {
     color: "#fff",
   },
 });
