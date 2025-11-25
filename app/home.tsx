@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image"; // << AGORA usando expo-image
 import { useRouter } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useRef } from "react";
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import logoHome from "../assets/images/logoHome.png";
 import BottomNav from "../src/components/BottomNav";
 
@@ -9,18 +10,33 @@ export default function Home() {
   const router = useRouter();
 
   const handlePerfil = () => {
-    router.push("/perfil"); // vai para a perfil e limpa histórico
+    router.push("/perfil"); 
   };
+
+  // Animations para os 3 cards
+  const fadeAnims = useRef([new Animated.Value(0), new Animated.Value(0), new Animated.Value(0)]).current;
+
+  useEffect(() => {
+    Animated.stagger(100,
+      fadeAnims.map(anim =>
+        Animated.timing(anim, {
+          toValue: 1,
+          duration: 400,
+          useNativeDriver: true,
+        })
+      )
+    ).start();
+  }, []);
 
   return (
     <View style={styles.container}>
 
-      {/* Botão de sair */}
+      {/* Botão de perfil */}
       <TouchableOpacity style={styles.perfilIcon} onPress={handlePerfil}>
         <Ionicons name="person-circle-outline" size={32} color="#fff" />
       </TouchableOpacity>
 
-      {/* Imagem no topo */}
+      {/* Logo */}
       <Image 
         source={logoHome}
         style={styles.logo}
@@ -29,31 +45,40 @@ export default function Home() {
         cachePolicy="memory-disk" 
       />
 
+      {/* Informações */}
       <View style={styles.informacoesContainer}>
         <Text style={styles.textinfo}>Informações</Text>
 
-        <TouchableOpacity style={styles.infoButton}>
-          <View style={styles.infoButtonContent}>
-            <Text style={styles.infoButtonText}>Produtos cadastrados</Text>
-            <Text style={styles.infoButtonNumber}>12</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.infoButton}>
-          <View style={styles.infoButtonContent}>
-            <Text style={styles.infoButtonText}>Próximos da validade</Text>
-            <Text style={styles.infoButtonNumber}>5</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.infoButton}>
-          <View style={styles.infoButtonContent}>
-            <Text style={styles.infoButtonText}>Receitas possíveis</Text>
-            <Text style={styles.infoButtonNumber}>8</Text>
-          </View>
-        </TouchableOpacity>
+        {["Produtos cadastrados", "Próximos da validade", "Receitas possíveis"].map((item, index) => (
+          <Animated.View
+            key={index}
+            style={[
+              styles.infoButton,
+              {
+                opacity: fadeAnims[index],
+                transform: [{
+                  translateY: fadeAnims[index].interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [20, 0],
+                  }),
+                }],
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 4,
+                elevation: 3,
+              }
+            ]}
+          >
+            <View style={styles.infoButtonContent}>
+              <Text style={styles.infoButtonText}>{item}</Text>
+              <Text style={styles.infoButtonNumber}>{index === 0 ? 12 : index === 1 ? 5 : 8}</Text>
+            </View>
+          </Animated.View>
+        ))}
       </View>
 
+      {/* Próximos passos */}
       <View style={styles.proximosContainer}>
         <Text style={styles.proximosTitle}>Olá!</Text>
 
@@ -72,7 +97,6 @@ export default function Home() {
   );
 }
 
-// --- Estilos ---
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -162,7 +186,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 20,
     alignItems: "center",
-    marginBottom: 20,
+    position: "absolute",
+    bottom: -47.5,
+    alignSelf: "center",
+    width: "100%",
+    zIndex: 10,
   },
 
   cadastrarButtonText: {
